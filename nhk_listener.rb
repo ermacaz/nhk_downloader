@@ -17,13 +17,13 @@ class NhkListener
     @options = options
     options[:logfile] = File.expand_path(logfile)
     options[:pidfile] = File.expand_path(pidfile)
-    @logger = Logger.new(options[:logfile] || STDOUT)
-    @logger.level = options[:loglevel] || Logger::INFO
-    @logger.formatter = proc do |severity, datetime, progname, msg|
+    $LOGGER = Logger.new(options[:logfile] || STDOUT)
+    $LOGGER.level = options[:loglevel] || Logger::INFO
+    $LOGGER.formatter = proc do |severity, datetime, progname, msg|
       "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg}\n"
     end
     @episodes_to_grab = []
-    @logger.info "Starting #{self.class}..."
+    $LOGGER.info "Starting #{self.class}..."
   end
   
   def daemonize?
@@ -37,15 +37,14 @@ class NhkListener
     trap_signals
     redirect_output if daemonize?
     until quit
-      get_schedule
       schedule_episodes_to_grab
       capture_episode_if_playing
       sleep(5)
     end
   end
   
-  def get_schedule
-    NhkCache.instance.get_cache(:nhk_schedule, 25) do
+  def schedule
+    @schedule = NhkCache.instance.get_cache(:nhk_schedule, 25*60) do
       response = HTTParty.get(NHK_SCHEDULE_URL)
       JSON.parse(response.body)
     end
@@ -56,7 +55,7 @@ class NhkListener
       if episode[:start_time] <= Time.now && episode[:end_time] >= Time.now
         @episodes_to_grab.delete(episode)
         Thread.new do
-          @logger.info "Recording #{episode[:filename]}"
+          $LOGGER.info "Recording #{episode[:filename]}"
           downloader = NhkDownloader.new
           downloader.download_stream(episode[:filename], (episode[:end_time] - Time.now))
         end.join
@@ -65,7 +64,7 @@ class NhkListener
   end
   
   def schedule_episodes_to_grab
-    @schedule['channel']['item'].each do |item|
+    schedule['channel']['item'].each do |item|
       title = item['title']
       if title.match?(SHOW_TITLE_REGEXP)
         title_part =  [item['title'], item['subtitle']].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'')
@@ -75,7 +74,7 @@ class NhkListener
           filename = "#{File.expand_path(File.dirname(__FILE__) + '/' + title)}.ts"
           end_time = Time.at((item['endDate'].to_i / 1000)+30)
           start_time = Time.at(item['pubDate'].to_i / 1000)
-          @logger.info "Scheduling #{title} to record at #{start_time}"
+          $LOGGER.info "Scheduling #{title} to record at #{start_time}"
           @episodes_to_grab << {:filename=>filename, :start_time=>start_time, :end_time=>end_time}
         end
       end

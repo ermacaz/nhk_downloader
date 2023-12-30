@@ -12,11 +12,11 @@ class NhkCache
   def get_cache(key, timeout=DEFAULT_TIMEOUT, &block)
     val = @cache[key.to_s]
     if val && val['expires_at'] >= Time.now
-      puts 'using cache'
+      $LOGGER.info 'using cache' if defined?($LOGGER)
       @cache[key.to_s]['touched_at'] = Time.now
       val['value']
     else
-      puts 'not cache'
+      $LOGGER.info 'not cache' if defined?($LOGGER)
       new_val = block.call
       set(key, new_val, timeout)
       new_val
