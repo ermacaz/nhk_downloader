@@ -1,0 +1,14 @@
+Layout/TrailingWhitespace:
+  Enabled: false
+  
+Style/HashSyntax:
+  Enabled: false
+  
+Style/Documentation:
+  Enabled: false
+  
+Layout/LineLength:
+  Max: 160
+
+Layout/SpaceAroundOperators:
+  enabled: false
