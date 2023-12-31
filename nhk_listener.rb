@@ -11,7 +11,6 @@ class NhkListener
   WORKING_DIRECTORY = ENV['NHK_DL_DIR'] || '/tmp'
   PIDFILE_PATH = ENV['NHK_PIDFILE'] || '/tmp/nhklistener.pid'
   LOGFILE_PATH = ENV['NHK_LOGFILE'] || '/tmp/nhklistener.log'
-  # WORKING_DIRECTORY = '/media/storage/streamcap'
   
   def initialize(options={})
     @options = options
@@ -71,7 +70,7 @@ class NhkListener
         if Dir.entries(WORKING_DIRECTORY).select {|s| s.match?(/#{title_part}/i)}.empty?
           title =  [item['title'], item['subtitle'], Date.today.strftime('%Y%m%d'), "WEBDL-1080p"].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'').gsub(':','')
           next if @episodes_to_grab.any? {|e| e[:filename].match?(/#{title}/i)}
-          filename = "#{File.expand_path(File.dirname(__FILE__) + '/' + title)}.ts"
+          filename = "#{File.expand_path(WORKING_DIRECTORY + '/' + title)}.ts"
           end_time = Time.at((item['endDate'].to_i / 1000)+30)
           start_time = Time.at(item['pubDate'].to_i / 1000)
           $LOGGER.info "Scheduling #{title} to record at #{start_time}"
