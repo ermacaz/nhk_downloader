@@ -43,7 +43,7 @@ class NhkListener
   end
   
   def schedule
-    @schedule = NhkCache.instance.get_cache(:nhk_schedule, 25*60) do
+    @schedule = NhkCache.instance.get_cache(:nhk_schedule, 60*60) do
       response = HTTParty.get(NHK_SCHEDULE_URL)
       JSON.parse(response.body)
     end
