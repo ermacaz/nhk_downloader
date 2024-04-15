@@ -68,8 +68,8 @@ class NhkListener
       if title.match?(SHOW_TITLE_REGEXP)
         title_part =  [item['title'], item['subtitle']].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'')
         if Dir.entries(WORKING_DIRECTORY).select {|s| s.match?(/#{title_part}/i)}.empty?
-          title =  [item['title'], item['subtitle'], Date.today.strftime('%Y%m%d'), "WEBDL-1080p"].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'').gsub(':','')
-          next if @episodes_to_grab.any? {|e| e[:filename].match?(/#{title}/i)}
+          title =  [title_part, Date.today.strftime('%Y%m%d'), "WEBDL-1080p"].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'').gsub(':','')
+          next if @episodes_to_grab.any? {|e| e[:filename].match?(/#{title_part}/i)}
           filename = "#{File.expand_path(WORKING_DIRECTORY + '/' + title)}.ts"
           end_time = Time.at((item['endDate'].to_i / 1000)+30)
           start_time = Time.at(item['pubDate'].to_i / 1000)
