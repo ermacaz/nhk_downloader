@@ -4,7 +4,9 @@ require 'net/http'
 require 'httparty'
 class NhkDownloader
   # STREAM_1080_URL = "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index_4M.m3u8"
-  STREAM_1080_URL = "https://nhkwlive-xjp.akamaized.net/hls/live/2003458/nhkwlive-xjp-en/index_2M.m3u8" #really 720
+  #STREAM_1080_URL =   "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index_1M.m3u8"
+  STREAM_1080_URL =  "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index_2M.m3u8"
+  #STREAM_1080_URL = "https://nhkwlive-xjp.akamaized.net/hls/live/2003458/nhkwlive-xjp-en/index_2M.m3u8" #really 720
   #STREAM_1080_URL = "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp/index_4M.m3u8"
   # def initialize(filepath, duration)
   #     FFMPEG::Movie.new(STREAM_1080_URL).transcode(filepath,  :duration=>duration)

@@ -7,7 +7,7 @@ class NhkListener
   attr_reader :options, :quit, :schedule, :episodes_to_grab
   
   NHK_SCHEDULE_URL = 'https://nwapi.nhk.jp/nhkworld/epg/v7b/world/now.json'
-  SHOW_TITLE_REGEXP = /lunch|bento expo|oishii|pythagora|journeys in japan|view of japan/i
+  SHOW_TITLE_REGEXP = /lunch|bento expo|oishii|pythagora|journeys in japan|view of japan|ekiben|ramen/i
   WORKING_DIRECTORY = ENV['NHK_DL_DIR'] || '/tmp'
   PIDFILE_PATH = ENV['NHK_PIDFILE'] || '/tmp/nhklistener.pid'
   LOGFILE_PATH = ENV['NHK_LOGFILE'] || '/tmp/nhklistener.log'
