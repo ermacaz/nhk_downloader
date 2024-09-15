@@ -15,9 +15,9 @@ class NhkDownloader
   
   def download_stream(filepath, duration)
     FFMPEG::Movie.new(STREAM_1080_URL).transcode(filepath,  :duration=>duration)
-    outputname = filepath.gsub(/ts$/, 'mkv')
-    system("HandBrakeCLI", "--preset", 'H.265 MKV 1080p30', "-i", filepath, "-o", outputname, :out => File::NULL)
-    File.delete(filepath)
+    # outputname = filepath.gsub(/ts$/, 'mkv')
+    # system("HandBrakeCLI", "--preset", 'H.265 MKV 1080p30', "-i", filepath, "-o", outputname, :out => File::NULL)
+    # File.delete(filepath)
   end
 end
 

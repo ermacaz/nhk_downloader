@@ -2,6 +2,7 @@ require 'logger'
 require 'fileutils'
 require_relative 'nhk_cache'
 require_relative 'nhk_downloader'
+require_relative 'api_app'
 
 class NhkListener
   attr_reader :options, :quit, :schedule, :episodes_to_grab
@@ -35,10 +36,18 @@ class NhkListener
     write_pid
     trap_signals
     redirect_output if daemonize?
+    start_api_thread 
     until quit
       schedule_episodes_to_grab
       capture_episode_if_playing
       sleep(5)
+    end
+  end
+  
+  def start_api_thread
+    Thread.new do
+      ApiApp.set :daemon, self # Pass the daemon instance to Api
+      ApiApp.run!
     end
   end
   
@@ -66,7 +75,7 @@ class NhkListener
     schedule['channel']['item'].each do |item|
       title = item['title']
       if title.match?(SHOW_TITLE_REGEXP)
-        title_part =  [item['title'], item['subtitle']].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'')
+        title_part =  [item['title'], item['subtitle']].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'').gsub(':','')
         if Dir.entries(WORKING_DIRECTORY).select {|s| s.match?(/#{title_part}/i)}.empty?
           title =  [title_part, Date.today.strftime('%Y%m%d'), "WEBDL-1080p"].select {|s| s.match?(/[A-z]|[0-9]/)}.join(" ").gsub(/\"|\//,'').gsub(':','')
           next if @episodes_to_grab.any? {|e| e[:filename].match?(/#{title_part}/i)}
