@@ -81,7 +81,7 @@ class NhkListener
           next if @episodes_to_grab.any? {|e| e[:filename].match?(/#{title_part}/i)}
           $LOGGER.info "Episodes to grab set: #{@episodes_to_grab.inspect}"
           $LOGGER.info "title part: #{title_part}"
-          filename = "#{File.expand_path(WORKING_DIRECTORY + '/' + title)}.ts"
+          filename = "#{File.expand_path(WORKING_DIRECTORY + '/' + title)}.mp4"
           end_time = Time.at((item['endDate'].to_i / 1000)+30)
           start_time = Time.at(item['pubDate'].to_i / 1000)
           $LOGGER.info "Scheduling #{title} to record at #{start_time}"
