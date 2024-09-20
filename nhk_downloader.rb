@@ -14,7 +14,6 @@ class NhkDownloader
   #
   
   def download_stream(filepath, duration)
-    duration = 30
     options = {:duration=>duration,
       video_codec: "h264", frame_rate: 30, resolution: "1280x720", video_bitrate: 1500,
     x264_vprofile: "high", x264_preset: "slow",
